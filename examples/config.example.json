@@ -1,0 +1,37 @@
+{
+  "_purpose": "Implementation worksheet; no bundled runtime consumes this file",
+  "target_release": "7.5",
+  "library": "ALERTDEMO",
+  "queue": "ALERTQ",
+  "queue_max_bytes": 8192,
+  "single_sender": true,
+  "check_intervals_seconds": {
+    "msgw": 60,
+    "missing_jobs": 60,
+    "system_messages": 60,
+    "storage": 300,
+    "disk_health": 300
+  },
+  "required_jobs": [],
+  "maintenance_windows": [],
+  "storage_warning_percent": 80,
+  "storage_critical_percent": 90,
+  "message_queues": [{"library": "QSYS", "name": "QSYSOPR"}],
+  "message_min_severity": 70,
+  "message_include_ids": [],
+  "message_exclude_ids": [],
+  "message_rule_precedence": "exclude, then include, then severity",
+  "first_run_history_minutes": 60,
+  "persistent_incident_state": true,
+  "recovery_events": true,
+  "reminder_minutes": 0,
+  "delivery": {
+    "adapter": "slack",
+    "settings_reference": "SET_PROTECTED_LOCAL_CONFIG_LOCATION"
+  },
+  "connect_timeout_seconds": 10,
+  "io_timeout_seconds": 30,
+  "retry_delays_seconds": [60, 120, 300, 900],
+  "permanent_failure_policy": "pause_and_notify_locally",
+  "external_heartbeat": "SELECT_EXISTING_EXTERNAL_MONITOR"
+}

@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "event_id": "REPLACE_WITH_UNIQUE_EVENT_ID",
+  "incident_key": "MSGW:123456/APPUSER/ORDERJOB",
+  "system": "PROD1",
+  "check": "MSGW",
+  "transition": "OPEN",
+  "priority": "WARNING",
+  "observed_at": "2026-09-22T10:01:00-04:00",
+  "time_basis": "ISO 8601 with offset",
+  "summary": "Job 123456/APPUSER/ORDERJOB is waiting for a reply",
+  "details": {
+    "job": "123456/APPUSER/ORDERJOB",
+    "subsystem": "QBATCH",
+    "status": "MSGW"
+  }
+}

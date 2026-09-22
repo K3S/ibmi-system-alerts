@@ -1,0 +1,25 @@
+DESIGN TEMPLATE -- not RPG source and not executable.
+
+Acquire single-monitor ownership; load and validate configuration.
+Load incident state and per-queue message checkpoints.
+
+Until controlled stop:
+  For each enabled check that is due:
+    Run the complete check, bounded to the intended scope.
+    If it fails:
+      Record failure, preserve previous incidents and checkpoint.
+      Make persistent check failure visible without an alert loop.
+      Continue with other checks.
+    Otherwise:
+      For each new incident / reminder / recovery / selected message:
+        Build full versioned event with event ID and incident key.
+        Serialize JSON and verify UTF-8 encoded length fits the queue.
+        Enqueue the actual event on ALERTQ.
+        Only after successful enqueue, update reported incident state.
+      Advance only safely processed message checkpoints.
+      Mark this check's completion and next due time.
+  Record cycle outcome, including which checks failed.
+  Wait until next due time, allowing controlled stop.
+
+State/queue changes are not one atomic transaction. The restart policy
+must prefer possible duplicate alerts over silent loss.

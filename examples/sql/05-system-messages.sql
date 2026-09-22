@@ -1,0 +1,17 @@
+-- Starting filter: tune message IDs after observing your system.
+-- Labels are literals because not all function levels return queue columns.
+SELECT MESSAGE_TIMESTAMP,
+       'QSYS' AS MESSAGE_QUEUE_LIBRARY,
+       'QSYSOPR' AS MESSAGE_QUEUE_NAME,
+       HEX(MESSAGE_KEY) AS MESSAGE_KEY_HEX,
+       MESSAGE_ID, MESSAGE_TYPE, SEVERITY, FROM_JOB, MESSAGE_TEXT
+FROM TABLE
+(
+    QSYS2.MESSAGE_QUEUE_INFO(
+        QUEUE_LIBRARY => 'QSYS',
+        QUEUE_NAME => 'QSYSOPR'
+    )
+) AS M
+WHERE MESSAGE_TIMESTAMP >= CURRENT TIMESTAMP - 1 HOUR
+  AND SEVERITY >= 70
+ORDER BY MESSAGE_TIMESTAMP DESC;

@@ -1,0 +1,27 @@
+DESIGN TEMPLATE -- not RPG source and not executable.
+
+Acquire exclusive sender ownership; read protected destination config.
+
+Until controlled stop:
+  Receive head event from FIFO ALERTQ with REMOVE='NO', bounded wait.
+  If queue empty: continue.
+  Validate version, required fields, JSON, and size.
+  If invalid: pause/flag or quarantine using the configured policy.
+  Format payload with the selected destination adapter.
+  Invoke configured delivery adapter (webhook, email, message queue, etc.).
+  For HTTPS use certificate verification, connect timeout, I/O timeout.
+  If accepted by destination's documented success contract:
+    Receive with REMOVE='YES', WAIT_TIME=0 from the SAME queue.
+    Verify the removed event ID matches; log result.
+    If removal fails: stop/flag; do not claim queue acknowledgment.
+  Otherwise:
+    Preserve head entry and its event ID.
+    Log redacted failure, wait with backoff (respect Retry-After).
+    For permanent failure, apply pause/quarantine policy.
+
+Exactly one consumer is essential. Do not run an ACS REMOVE='YES' query
+or clear the queue concurrently. Verify-after-remove diagnoses a race;
+it does not make multiple consumers safe.
+
+If the sender crashes after external acceptance but before removal,
+delivery can repeat. Exactly-once delivery is not guaranteed.
